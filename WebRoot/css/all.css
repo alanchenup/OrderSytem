@@ -1,0 +1,19 @@
+#head {
+	background:#CCC;
+	position:relative;
+	width:auto;
+	text-align:center;
+	}
+#content{
+	background:#CCC;
+	position:relative;
+	width:auto;
+	height:auto;}	
+#footer {
+	background-color: #CCC;
+	position: relative;
+	width: auto;
+	text-align: center;
+	
+}
+
