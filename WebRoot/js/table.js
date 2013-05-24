@@ -21,13 +21,19 @@ Chen.Table = Class.create({
 		//支持操作按钮
 		this.toolbar = p.toolbar;
 
+		//支持查询
+		this.query = p.query;
 		this.keyword = ''; // Query用 keyword
 
 		// 支持分页  true:false
 		this.pagenation = p.pagenation;
+		//每页数据行数
 		this.pagesize = 10;
+		//当前页数
 		this.pageindex = 0;
+		//总共有几页
 		this.pagenum = 2;
+		//总共有多少数据行
 		this.count = 0;
 		// 直接加载
 		this.initialize = p.initialize;
@@ -44,6 +50,10 @@ Chen.Table = Class.create({
 		//确定当前表是否有添加的tr
 		this.tr_add = false;
 		this.tr_update = false;
+		//后端返回的每页的数据
+		this.res = {};
+
+
 
 		this.tb_init();
 		Chen.TableManager.add(this);
@@ -56,15 +66,19 @@ Chen.Table = Class.create({
 	},
 	//创建操作按钮
 	tb_cbtn: function() {
-		if (this.toolbar) {
+		if (this.toolbar || this.query) {
 			//表格和操作按钮的html代码
-			var h = "";
+			var h = "<span>";
 			//操作按钮渲染
+			if (this.toolbar) {
+				for (var i = 0; i < this.toolbar.length; i++) {
+					var bar = this.toolbar[i];
 
-			for (var i = 0; i < this.toolbar.length; i++) {
-				var bar = this.toolbar[i];
-
-				h += '<span><button id="' + this.id + '_btn_' + bar[0] + '" class="btn btn-primary" type="button" onclick="Chen.TableManager.tb_btn(\'' + this.id + '\',\'' + bar[0] + '\')">' + bar[1] + '</button>';
+					h += '<button id="' + this.id + '_btn_' + bar[0] + '" class="btn btn-primary" type="button" onclick="Chen.TableManager.tb_btn(\'' + this.id + '\',\'' + bar[0] + '\')">' + bar[1] + '</button>';
+				}
+			}
+			if (this.query) {
+				h += '<input type="text" class="input-medium search-query" data-provide="typeahead"> <button class="btn btn-primary">查询</button>';
 			}
 			h += '</span><hr>';
 			$(this.container).append(h);
@@ -73,28 +87,15 @@ Chen.Table = Class.create({
 	//创建表
 	tb_ctb: function() {
 		var h = '';
-		//创建表头
-		h += '<table class="table table-hover table-bordered table-striped" id="' + this.id + '"><tr id="' + this.id + '_th">';
-		h += '<th></th>';
-		var i = 0;
-		for (i = 0; i < this.th_name.length; i++) {
-			h += '<th>' + this.th_name[i] + '</th>';
-		}
-		h += '</tr>';
-		//创建tbody>tr>td
+		//创建表
+		h += '<table class="table table-hover table-bordered table-striped" id="' + this.id + '">';
 		h += '</table>';
-
-
-
 		$(this.container).append(h);
 		this.tb_idx(1);
-
-
 	},
 	//对分页按钮的处理
-	tb_first: function() {
-		if (this.pageindex <= 1) return;
-		this.tb_idx(1);
+	tb_to: function(num) {
+		this.tb_idx(num);
 	},
 	tb_pre: function() {
 		if (this.pageindex <= 1) return;
@@ -104,32 +105,15 @@ Chen.Table = Class.create({
 		if (this.pageindex >= this.pagenum) return;
 		this.tb_idx(this.pageindex + 1);
 	},
-	tb_last: function() {
-		if (this.pageindex >= this.pagenum) return;
-		this.tb_idx(this.pagenum);
-	},
-	tb_idxi: function() {
-		if (Chen.Util.isEnter()) {
-			var idx = this.bottom.input.value.trim();
-			if (idx == '' || !idx.isNumber()) {
-				alert('请输入数字');
-				this.bottom.input.value = '';
-				this.bottom.input.focus();
-				return;
-			}
-			this.tb_idx(parseInt(idx));
-			return false;
-		} else {
-			return true;
-		}
-	},
+	
+	
 	tb_idx: function(idx) {
 		if (idx > this.pagenum) return;
 		this.pageindex = idx;
-		this.tb_reload();
+		this.tb_refresh();
 	},
 	tb_reload: function() {
-		var that = this;
+
 		var param = {
 			'method': this.load_method,
 			'pagesize': this.pagesize,
@@ -139,46 +123,68 @@ Chen.Table = Class.create({
 			'orderasc': this.orderasc
 		};
 		param.theme = this.theme;
-		Chen.Ajax.ajax_send(param, this.tb_idx_res.bind(this));
+		Chen.Ajax.ajax_send(param, this.tb_res.bind(this));
 	},
-	tb_idx_res: function(vo) {
+	tb_res: function(vo) {
+		this.res = vo;
+		this.tb_set(vo.rows);
 		if (this.pagenation) {
-			this.tb_set(vo.rows);
-			var page = vo.page;
-			var pageindex = page.pageindex;
-			var pagenum = page.pagesize;
-			//创建分页按钮
-			var i = 1;
-
-			var btn_page = '<div class="pagination pagination-right">';
-			if (!page.hasPre) {
-				btn_page += '<ul> <li class="disabled"><a href="#">Prev</a></li>';
-			} else {
-				btn_page += '<ul> <li ><a href="#" onclick="this.tb_pre()">Prev</a></li>';
-			}
-
-			for (i = 1; i <= page.pageall; i++) {
-				if (i == page.pageindex) {
-					btn_page += '<li class="active"><a href="#" >' + i + '</a></li>';
-				} else {
-					btn_page += '<li><a href="#">' + i + '</a></li>';
-				}
-
-			}
-			if (!page.hasNext) {
-				btn_page += '<ul> <li class="disabled"><a href="#">Next</a></li>';
-			} else {
-				btn_page += '<ul> <li ><a href="#">Next</a></li>';
-			}
-			$(this.container).append(btn_page);
-
-		} else {
-			this.tb_set(vo.rows);
+			this.tb_cpage(vo.page);
 		}
+	},
+	//生成表头
+	tb_ctbh: function() {
+		var h = '<tr id="' + this.id + '_th">';
+		h += '<th></th>';
+		var i = 0;
+		for (i = 0; i < this.th_name.length; i++) {
+			h += '<th>' + this.th_name[i] + '</th>';
+		}
+		h += '</tr>';
+		return h;
+
+	},
+	//创建分页
+	tb_cpage: function(page) {
+
+		var pageindex = page.pageindex;
+		var pagenum = page.pagesize;
+		//创建分页按钮
+
+		var btn_page = '<div id="' + this.id + '_pagenation" class="pagination pagination-right">';
+		if (!page.hasPre) {
+			btn_page += '<ul> <li class="disabled"><a href="#">Prev</a></li>';
+		} else {
+			btn_page += '<ul> <li ><a href="#" onclick="Chen.TableManager.tb_pre(\'' + this.id + '\')">Prev</a></li>';
+		}
+
+		for (var i = 1; i <= page.pageall; i++) {
+			if (i == page.pageindex) {
+				btn_page += '<li class="active"><a href="#" onclick="Chen.TableManager.tb_to(\'' + this.id + '\',\'' + i + '\')">' + i + '</a></li>';
+			} else {
+				btn_page += '<li><a href="#" onclick="Chen.TableManager.tb_to(\'' + this.id + '\',\'' + i + '\')">' + i + '</a></li>';
+			}
+
+		}
+		if (!page.hasNext) {
+			btn_page += '<ul> <li class="disabled"><a href="#" >Next</a></li>';
+		} else {
+			btn_page += '<ul> <li ><a href="#" onclick="Chen.TableManager.tb_next(\'' + this.id + '\')">Next</a></li>';
+		}
+		if ($("#" + this.id + "_pagenation").length > 0) {
+			$("#" + this.id + "_pagenation").replaceWith(btn_page);
+		} else {
+			$(this.container).append(btn_page);
+		}
+
 	},
 	//根据返回的数据和字段去生成表格
 	tb_set: function(rows) {
 		var i = 0;
+
+		//生成表头
+		var tb_th = this.tb_ctbh();
+		$("#" + this.id).append(tb_th);
 
 		for (i = 0; i < rows.length; i++) {
 			var row = rows[i];
@@ -201,8 +207,12 @@ Chen.Table = Class.create({
 		var vals = [];
 		for (var n = 0; n < this.labels.length; n++) {
 			var val = '';
+
 			try {
 				eval("val =row." + this.labels[n] + ";");
+				if (n == 0) {
+					val = '<img src="http://localhost:8888/OrderSystem/pic?id=' + val + '"/>';
+				}
 			} catch (e) {}
 			vals[n] = val;
 		}
@@ -270,9 +280,28 @@ Chen.Table = Class.create({
 		Chen.TableManager.btn_update_cel(id, rowid);
 
 	},
-	tb_del_ajax: function() {
+	tb_remove_ajax: function(rowid) {
+		var dbid = rowid.substring(rowid.lastIndexOf("_") + 1, rowid.length);
+		var param = {};
+		param.id = dbid;
+		param.theme = this.theme;
+		param.method = "delete";
+		Chen.Ajax.ajax_send(param, this.r_tb_remove_ajax.bind(this));
 
+	},
+	//删除后的回调函数
+	r_tb_remove_ajax: function(r) {
+		if (r.flag) {
 
+			alert("删除成功！");
+			Chen.TableManager.tb_refresh(this.id);
+		}
+
+	},
+
+	tb_refresh: function() {
+		$("#" + this.id).empty();
+		this.tb_reload();
 	}
 
 });
@@ -388,9 +417,35 @@ Object.extend(Chen.TableManager, {
 		if (t != null) {
 			$("#" + rowid + "_n").remove();
 			$("#" + rowid + "_btn").remove();
-			$("#"+rowid).show();
+			$("#" + rowid).show();
 			t.tr_update = false;
 		}
 
+	},
+	tb_refresh: function(id) {
+		var t = this.get(id);
+		if (t != null) {
+			t.tb_refresh();
+		}
+	},
+	tb_to: function(id, idx) {
+		var t = this.get(id);
+		if (t != null) {
+			t.tb_to(idx);
+		}
+	},
+	tb_pre: function(id) {
+		var t = this.get(id);
+		if (t != null) {
+			t.tb_pre();
+		}
+	},
+	tb_next: function(id) {
+		var t = this.get(id);
+		if (t != null) {
+			t.tb_next();
+		}
 	}
+
+
 });

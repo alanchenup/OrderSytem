@@ -1,7 +1,6 @@
 package com.ordersystem.dao;
 
 import java.sql.Connection;
-import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -69,7 +68,12 @@ public class DBHelper {
 	            System.out.println("DBUtils: Cannot close resultset."); 
 	        } 
 	    } 
-	/***
+	public static Statement getStatement() throws SQLException{
+		Connection connection = getConnection();
+		Statement stmt= connection.createStatement();
+		return stmt;
+	}
+	    /***
 	 * 创建
 	 * @param sql
 	 * @return
@@ -99,11 +103,4 @@ public class DBHelper {
 		}
 		return pstmt.executeUpdate();
 	}
-	public static int write(String query,int id)throws SQLException{
-		OraclePreparedStatement	pstmt= prepareStatement(query);
-		pstmt.setInt(1, id);
-		return pstmt.executeUpdate();
-	}
-	
-
 }

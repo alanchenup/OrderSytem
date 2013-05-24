@@ -7,8 +7,7 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
 <head>
-	<base href="<%=basePath%>
-	">
+	<base href="<%=basePath%>">
 	<title>Main</title>
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
@@ -34,7 +33,7 @@ td>img{
 
 <body>
 	<div id="pagewrap">
-		<div id="headwrap"></div>
+		<div id="headwrap"><h1>欢迎使用订餐后台管理系统</h1></div>
 		<div id="contentwrap">
 			<div class="tabbable tabs-left" style="margin-bottom: 18px;">
 				<ul id="myTab" class="nav nav-tabs">
@@ -50,12 +49,9 @@ td>img{
 					</li>
 				</ul>
 				<div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
-					<div class="tab-pane active" id="m_dish">
-					</div>
-					<div class="tab-pane" id="m_material">
-					</div>
-					<div class="tab-pane" id="m_order">
-					</div>
+					<div class="tab-pane active" id="m_dish"></div>
+					<div class="tab-pane" id="m_material"></div>
+					<div class="tab-pane" id="m_order"></div>
 				</div>
 
 			</div>
@@ -65,13 +61,17 @@ td>img{
 			<a href="#">陈畅</a>
 			版权所有。保留所有权利。
 		</div>
-	</div>
-	<script src="js/jquery.js"></script>
-	<script src="js/bootstrap.js"></script>
-	<script src="js/class.js"></script>
-	<script src="js/table.js"></script>
-	<script src="js/content.js"></script>
-	<script type="text/javascript">
+		<!-- Modal -->
+        <div id="panel" class="hide"></div>
+<script src="js/jquery.js"></script>
+<script src="js/bootstrap.js"></script>
+<script src="js/ajaxfileupload.js"></script>
+<script src="js/class.js"></script>
+<script src="js/table.js"></script>
+<script src="js/panel.js"></script>
+<script src="js/content.js"></script>
+
+<script type="text/javascript">
 
 
 
@@ -81,9 +81,6 @@ $('#myTab a').click(function (e) {
   e.preventDefault();
   $(this).tab('show');
 });
-function formHide(id){
-	$("#"+id).hide();
-}
 </script>
 </body>
 </html>

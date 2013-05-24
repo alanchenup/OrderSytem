@@ -10,22 +10,23 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.ordersystem.common.model.Dish;
+import com.ordersystem.common.model.Material;
+import com.ordersystem.common.model.Material;
 import com.ordersystem.common.model.Page;
-import com.ordersystem.common.model.Pic;
 import com.ordersystem.common.model.User;
 import com.ordersystem.common.util.JsonUtil;
-import com.ordersystem.dao.DaoDish;
+import com.ordersystem.dao.DaoMaterial;
+
 
 /**
  * @author Administrator
- * 
+ *
  */
-public class DishWrap {
-	public static DaoDish daoDish = new DaoDish();
+public class MaterialWrap {
+	public static DaoMaterial dao= new DaoMaterial();
 
 	/**
-	 * 载入菜品
+	 * 载入食材
 	 * 
 	 * @param session
 	 * @param request
@@ -42,12 +43,12 @@ public class DishWrap {
 		String orderasc = request.getParameter("orderasc");
 		// 搜索关键字
 		String keyword = request.getParameter("keyword");
-		Page page = new Page(pagesize, pageindex, daoDish.getSum(null));
+		Page page = new Page(pagesize, pageindex, dao.getSum(null));
 
-		List<Dish> dishList = daoDish.loadAll(page, orderby, orderasc);
+		List<Material> List = dao.loadAll(page, orderby, orderasc);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("page", page);
-		map.put("rows", dishList);
+		map.put("rows", List);
 		return JsonUtil.toJson(map);
 	}
 
@@ -62,13 +63,12 @@ public class DishWrap {
 	 */
 	public static String add(HttpSession session, HttpServletRequest request,
 			User user) throws Exception {
-		Dish dish = new Dish();
-		dish.setDish_name(request.getParameter("dish_name"));
-		dish.setDish_pic(Integer.parseInt(request.getParameter("dish_pic")));
-		dish.setDish_content(request.getParameter("dish_content"));
-		dish.setDish_price(request.getParameter("dish_price"));
-		dish.setDish_c_price(request.getParameter("dish_c_price"));
-		Boolean flag = daoDish.add(dish);
+		Material mate = new Material();
+		mate.setMate_name(request.getParameter("mate_name"));
+		mate.setMate_pic(Integer.parseInt(request.getParameter("mate_pic")));
+		mate.setMate_content(request.getParameter("mate_content"));
+
+		Boolean flag = dao.add(mate);
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		map.put("flag", flag);
 		return JsonUtil.toJson(map);
@@ -85,22 +85,15 @@ public class DishWrap {
 	 */
 	public static String update(HttpSession session,
 			HttpServletRequest request, User user) throws Exception {
-		Dish dish = new Dish();
-		dish.setId(Integer.parseInt(request.getParameter("id")));
-		dish.setDish_name(request.getParameter("dish_name"));
-		dish.setDish_pic(Integer.parseInt(request.getParameter("dish_pic")));
-		dish.setDish_content(request.getParameter("dish_content"));
-		dish.setDish_price(request.getParameter("dish_price"));
-		dish.setDish_c_price(request.getParameter("dish_c_price"));
-		dish.setM_mate(Integer.parseInt(request.getParameter("m_mate")));
-		dish.setV_mate(Integer.parseInt(request.getParameter("v_mate")));
-		
-		//获取image的路径 
-		String picuri=request.getParameter("dish_pic");
+		Material mate = new Material();
+		mate.setId(Integer.parseInt(request.getParameter("id")));
+		mate.setMate_name(request.getParameter("mate_name"));
+		mate.setMate_pic(Integer.parseInt(request.getParameter("mate_pic")));
+		mate.setMate_content(request.getParameter("mate_content"));
 		
 		
 		
-		Boolean flag = daoDish.update(dish);
+		Boolean flag = dao.update(mate);
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		map.put("flag", flag);
 		return JsonUtil.toJson(map);
@@ -119,9 +112,10 @@ public class DishWrap {
 			HttpServletRequest request, User user) throws Exception {
 
 		int id = Integer.parseInt(request.getParameter("id"));
-		Boolean flag = daoDish.delete(id);
+		Boolean flag = dao.delete(id);
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		map.put("flag", flag);
 		return JsonUtil.toJson(map);
 	}
+
 }

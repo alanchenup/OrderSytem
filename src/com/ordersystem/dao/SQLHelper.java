@@ -56,7 +56,7 @@ public class SQLHelper {
 		}
 		sb.append(" from ").append(table);
 		if(conditions!=null&&conditions.length>0){
-			sb.append(" where 1 and ").append(StringUtils.join(conditions, "=? and ")).append("=?");
+			sb.append(" where 1=1 and ").append(StringUtils.join(conditions, "=? and ")).append("=?");
 		}
 		if(after!=null)sb.append(" ").append(after);
 		return sb.toString();
@@ -74,7 +74,7 @@ public class SQLHelper {
 	public static String row_delete(String table,String[] conditions,String after){
 		StringBuilder sb = new StringBuilder();
 		sb.append("delete from ");
-		sb.append(table).append(" where 1 ");
+		sb.append(table).append(" where 1=1 ");
 		if(conditions!=null&&conditions.length>0){
 			sb.append(" and ").append(StringUtils.join(conditions, "=? and ")).append("=?");
 		}
@@ -150,7 +150,7 @@ public class SQLHelper {
 		StringBuilder sb=new StringBuilder();
 		sb.append("update ");
 		sb.append(table);
-		sb.append(" set ").append(StringUtils.join(update_ziduans, "=?,")).append("=?").append(" where 1 ");
+		sb.append(" set ").append(StringUtils.join(update_ziduans, "=?,")).append("=?").append(" where 1=1 ");
 		if(conditions!=null&&conditions.length>0){
 			sb.append(" and ").append(StringUtils.join(conditions, "=? and ")).append("=?");
 		}
@@ -175,8 +175,6 @@ public class SQLHelper {
         sb.append(table);
         sb.append(" b3 where b2.id = b3.id order by ");
         sb.append(orderby).append(" ").append(orderasc);		
-		return sb.toString();
-	
-		
+		return sb.toString();		
 	}
 }

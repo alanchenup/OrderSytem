@@ -3,7 +3,7 @@
  */
 package com.ordersystem.common.model;
 
-import java.sql.Clob;
+import java.util.List;
 
 /**
  * Dish model contain the information of dish.
@@ -14,15 +14,17 @@ public class Dish {
 
 	public final static String TABLE="dish";
 	private int id;
-	private String dish_name="没有名字";
-	private String dish_content="没有描述";
-	private String dish_pic="0.00";
+	private String dish_name;
+	private String dish_content="dishcontents";
+	private int dish_pic;
 	
-	private String dish_price="0.00" ;
-	private String dish_c_price="0.00";
-	private int m_mate=0;
-	private int v_mate=0;
-	private String dish_sales="0";
+	private String dish_price ;
+	private String dish_c_price;
+	private int m_mate;
+	private int v_mate;
+	private List<Material> lm_mate;
+	private List<Material> lv_mate;
+	private String dish_sales;
 	
 	public int getId() {
 		return id;
@@ -30,6 +32,13 @@ public class Dish {
 	public void setId(int id) {
 		this.id = id;
 	}
+	public void setM_mate(int m_mate) {
+		this.m_mate = m_mate;
+	}
+	public void setV_mate(int v_mate) {
+		this.v_mate = v_mate;
+	}
+
 	public String getDish_name() {
 		return dish_name;
 	}
@@ -40,12 +49,13 @@ public class Dish {
 		return dish_content;
 	}
 	public void setDish_content(String dish_content) {
+		if(dish_content==null) return;
 		this.dish_content = dish_content;
 	}
-	public String getDish_pic() {
+	public int getDish_pic() {
 		return dish_pic;
 	}
-	public void setDish_pic(String dish_pic) {
+	public void setDish_pic(int dish_pic) {
 		this.dish_pic = dish_pic;
 	}
 	public String getDish_price() {
@@ -63,15 +73,11 @@ public class Dish {
 	public int getM_mate() {
 		return m_mate;
 	}
-	public void setM_mate(int m_mate) {
-		this.m_mate = m_mate;
-	}
+
 	public int getV_mate() {
 		return v_mate;
 	}
-	public void setV_mate(int v_mate) {
-		this.v_mate = v_mate;
-	}
+
 	public String getDish_sales() {
 		return dish_sales;
 	}
