@@ -43,8 +43,7 @@ public class JsonUtil {
     	if(content==null||content.equals(""))return null;
         try {
             return (T)(cacheFactory.readValue(content, type));
-        } catch (Exception e) {
-        	
+        } catch (Exception e) {        	
         }
         return null;
     }

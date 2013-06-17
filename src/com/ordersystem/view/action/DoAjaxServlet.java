@@ -88,7 +88,12 @@ public class DoAjaxServlet extends HttpServlet {
 		
 		User user=null;
 		HttpSession session = request.getSession(true);
-
+        if(session.getAttribute("user")!=null){
+        	user =(User)session.getAttribute("user");
+        }
+        else{
+        	user= new User();
+        }
 		//利用反射调用后端类和方法
 		String res=null;
 		Class cls=null;

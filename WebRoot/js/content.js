@@ -194,33 +194,139 @@ tb_mate.tb_btn_override = function(btn) {
 
 
 //tb_order表的创建和对表的操作
-// var tb_order = new Chen.Table({
-//      container:"#m_order",
-//     id:"tb_order",
-//     theme:"Order",
-//     load_method:"loadAll",
-//     th_name:["订单号","订单人","订单时间"],
-//     labels:["id","order_user","order_date"],
-//     toolbar:[["remove","删除"]],
-//     initialize:false,
-//     pagenation:true,
-//     query:true,
-//     orderby:"id",
-//     orderasc: "asc"
-// });
-// tb_mate.tb_btn_override = function(btn) {
+ var tb_order = new Chen.Table({
+      container:"#m_order",
+     id:"tb_order",
+     theme:"Order",
+     load_method:"loadAll",
+     th_name:["订单号","订单人","订单时间"],
+     labels:["id","order_user","order_date"],
+     toolbar:[["remove","删除"]],
+     initialize:false,
+     pagenation:true,
+     query:true,
+     orderby:"id",
+     orderasc: "asc"
+ });
+ tb_order.tb_btn_override = function(btn) {
 	
-// 	if (btn == 'remove') {
-// 		if (this.row == null) {
-// 			alert('please click some row');
-// 			return;
-// 		}
-// 		if (!confirm('确认删除吗?')) {
-// 			return false;
-// 		}
-// 		var rowid = this.row[0].id;
-// 		this.tb_remove_ajax(rowid);
-// 	}
-	
+ 	if (btn == 'remove') {
+ 		if (this.row == null) {
+ 			alert('please click some row');
+ 			return;
+ 		}
+ 		if (!confirm('确认删除吗?')) {
+ 			return false;
+ 		}
+ 		var rowid = this.row[0].id;
+ 		this.tb_remove_ajax(rowid);
+ 	}
+ };
+ 
+ 
+ 
+ 
+//tb_user表的创建和对表的操作
 
-// };
+ var tb_user = new Chen.Table({
+     container:"#m_user",
+     id:"tb_user",
+     theme:"User",
+     load_method:"loadAll",
+     th_name:["用户名","用户昵称","用户密码","用户Email"],
+     labels: ["user_name", "user_niname", "user_password","user_email"],
+     toolbar:[["add","添加用户"],["remove","删除用户"],["update","更新用户"]],
+     initialize:false,
+     pagenation:true,
+     orderby:"user_name",
+     orderasc: "asc",
+     query:true
+
+ });
+ tb_user.tb_btn_override = function(btn) {
+ 	if (btn == 'add') {
+ 		// $("#mate_form").toggle();
+ 		if (!this.tr_add) {
+ 			// $('#myModal').modal();
+ 			var addPanel = new Chen.Panel({
+ 				container: "#panel",
+ 				id: tb_mate.id + "_panel",
+ 				theme: "Material",
+ 				load_method: "add",
+ 				title: "添加用户",
+ 				type: "add",
+ 				labels:["用户名","用户昵称","用户密码","用户Email"],
+ 				inputnames: ["user_name", "user_niname", "user_password","user_email"],
+ 				inputtypes: ["text", "text", "text","text"],
+ 				tb:this.id
+ 			});
+ 		
+ 			addPanel.show();
+ 		}
+ 		return;
+ 	}
+ 	if (btn == 'remove') {
+ 		if (this.row == null) {
+ 			alert('please click some row');
+ 			return;
+ 		}
+ 		if (!confirm('确认删除吗?')) {
+ 			return false;
+ 		}
+ 		var rowid = this.row[0].id;
+ 		this.tb_remove_ajax(rowid);
+ 	}
+ 	if (btn == 'update') {
+ 		if (!this.tr_add) {
+ 			if (this.row == null) {
+ 				alert('please click some row');
+ 				return;
+ 			}
+ 			if (!confirm('确认更新吗?')) {
+ 				return false;
+ 			}
+ 			var res = this.res;
+ 			var rows = res.rows;
+ 			var row = "";
+
+ 			var collspan = this.labels.length + 1;
+ 			var rowid = this.row[0].id;
+ 			var dbid = rowid.substring(rowid.lastIndexOf("_") + 1, rowid.length);
+ 			for (var n = 0; n < rows.length; n++) {
+ 				if (rows[n].id == dbid) row = rows[n];
+ 			}
+
+ 			var updatePanel = new Chen.Panel({
+ 				container: "#panel",
+ 				id: tb_mate.id + "_panel",
+ 				theme: "mate",
+ 				load_method: "update",
+ 				title: "更新用户",
+ 				type: "update",
+ 				labels:["用户名","用户昵称","用户密码","用户Email"],
+ 				inputnames: ["user_name", "user_niname", "user_password","user_email"],
+ 				inputtypes: ["text", "text", "text","text"],
+ 				rowid:rowid,
+ 				row:row,
+ 				tb:this.id
+
+ 			});
+ 			updatePanel.show();
+ 		}
+ 		return;
+ 	}
+
+ };
+	tb_user.tb_val= function(row) {
+		var vals = [];
+		for (var n = 0; n < this.labels.length; n++) {
+			var val = '';
+
+			try {
+				eval("val =row." + this.labels[n] + ";");
+			} catch (e) {}
+			vals[n] = val;
+		}
+		return vals;
+	};
+

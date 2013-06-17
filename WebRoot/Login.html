@@ -117,11 +117,11 @@ body {
 			</div>
 			<form class="form-signin">
 				<h2 class="form-signin-heading">请登录</h2>
-				<input type="text" class="input-block-level" placeholder="请输入邮箱地址">
-				<input type="password" class="input-block-level" placeholder="请输入密码">
+				<input type="text" id="user_name" class="input-block-level" placeholder="请输入用户名">
+				<input type="password" id="user_password" class="input-block-level" placeholder="请输入密码">
 				<label class="checkbox">
 					<input type="checkbox" value="remember-me">记住密码</label>
-				<button class="btn btn-large btn-primary" type="submit">登录</button>
+				<button class="btn btn-large btn-primary" onclick="login()">登录</button>
 			</form>
 		</div>
 		<!--footer-->
@@ -133,9 +133,20 @@ body {
 	</div>
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
+<script src="js/class.js"></script>
 <script type="text/javascript">
  $('.carousel').carousel({
   interval: 2000
-})</script>
+});
+function login(){
+var parma={};
+parma.theme="User";
+parma.method="login";
+parma.user_name=$("#user_name").value;
+parma.user_password=$("#user_password").value;
+
+}
+
+</script>
 </body>
 </html>

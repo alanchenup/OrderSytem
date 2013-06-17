@@ -6,81 +6,170 @@ String basePath = request.getScheme()+"://"+request.getServerName()+":"+request.
 
 <!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 4.01 Transitional//EN">
 <html>
-<head>
-	<base href="<%=basePath%>">
-	<title>Main</title>
+  <head>
+    <base href="<%=basePath%>">    
 	<meta http-equiv="pragma" content="no-cache">
 	<meta http-equiv="cache-control" content="no-cache">
-	<meta http-equiv="expires" content="0">
+	<meta http-equiv="expires" content="0">    
 	<meta http-equiv="keywords" content="keyword1,keyword2,keyword3">
 	<meta http-equiv="description" content="This is my page">
-	<link href="css/bootstrap.min.css" rel="stylesheet">
-	<link href="css/main.css" rel="stylesheet">
+		<title>Login</title>
+	<link href="css/bootstrap.css" rel="stylesheet">
 	<style type="text/css">
-#pagewrap, #headwrap, #contentwrap, #footer {
-  width:100%;
+html, body, div, span, p {
+	margin: 0;
+	padding: 0;
+	border: 0;
 }
-table{
-  border:1px solid;
-  text-align:center;}
-  
-td>img{
-  width:40px;
-  height:40px;} 
+ul, ol li {
+	list-style:none;
+	float:left;
+}
+body {
+	color: black;
+	font-family: Arial, Helvetica, Verdana, sans-serif;
+	text-align: center;
+	background-image:url("img/background.png");
+	
+	background-size:100% 100%;
+}
+#pagewrap {
+	width: 950px;
+	margin: 0 auto;
+	text-align:left;
+}
+#main-logo {
+	background:transparent url('img/logo.png') no-repeat scroll left top;
+	display:block;
+	height:125px;
+	width:600px;
+	margin:0px;
+	overflow:hidden;
+	position:absolute;
+	z-index:12;
+	margin-top:0px;
+}
+#headwrap {
+	background-color:#0e9ecf;
+	width:950px;
+	height:76px;
+	margin-top: 6px;
+	position:relative;
+}
+#contentwrap {
+	margin-top:10px;
+	background-color:#ecf4f9;
+	max-width:950px;
+	height:500px;
+	position:relative;
+}
+#myCarousel{
+	margin:0px;
+	padding:0px;
+	position:absolute;
+	top:0px;
+	left:0px;
+	}
+#footer {
+	position:relative;
+	background-color:#0e9ecf;
+	width:950px;
+	text-align:center;
+	height:50px;
+	padding-top:10px;
+	margin-top:10px;
+}
+.form-signin {
+	position:absolute;
+	left:300px;
+	top:40px;
+	width: 300px;
+	z-index:12;
+	padding: 19px 29px 29px;
+	margin: 80px auto 20px;
+	border: 1px solid #e5e5e5;
+	box-shadow: 0 2px 4px rgba(0, 0, 0, .5);
+	opacity: 0.7;
+	background-color:#ecf4f9;
+}
+.form-signin .form-signin-heading, .form-signin .checkbox {
+	margin-bottom: 10px;
+}
+.form-signin input[type="text"], .form-signin input[type="password"] {
+	font-size: 16px;
+	height: auto;
+	margin-bottom: 15px;
+	padding: 7px 9px;
+	font-weight:bold;
+}
 </style>
-	<!--
-	<link rel="stylesheet" type="text/css" href="styles.css">--></head>
 
-<body>
+  </head>
+  
+
+   <body>
+	r<!--pagewrap-->
 	<div id="pagewrap">
-		<div id="headwrap"><h1>欢迎使用订餐后台管理系统</h1></div>
+		<a href="index.jsp" id="main-logo"></a>
+		<!--headwrap-->
+		<div id="headwrap"></div>
+		<!--contentwrap-->
 		<div id="contentwrap">
-			<div class="tabbable tabs-left" style="margin-bottom: 18px;">
-				<ul id="myTab" class="nav nav-tabs">
-					<li class="active">
-						<a href="#m_dish" data-toggle="tab">菜品管理</a>
-					</li>
-					<li class="">
-						<a href="#m_material" data-toggle="tab">食材管理</a>
-					</li>
-
-					<li class="">
-						<a href="#m_order" data-toggle="tab">订单管理</a>
-					</li>
-				</ul>
-				<div class="tab-content" style="padding-bottom: 9px; border-bottom: 1px solid #ddd;">
-					<div class="tab-pane active" id="m_dish"></div>
-					<div class="tab-pane" id="m_material"></div>
-					<div class="tab-pane" id="m_order"></div>
+			<div id="myCarousel" class="carousel slide">
+				<div class="carousel-inner">
+					<div class="item">
+						<img src="img/login1.jpg" alt=""></div>
+					<div class="item">
+						<img src="img/login2.jpg" alt=""></div>
+					<div class="item active">
+						<img src="img/login3.jpg" alt=""></div>
 				</div>
-
+				<a class="left carousel-control" href="#myCarousel" data-slide="prev">‹</a>
+				<a class="right carousel-control" href="#myCarousel" data-slide="next">›</a>
+			</div>
+			<div class="form-signin">
+				<h2 class="form-signin-heading">请登录</h2>
+				<input type="text" id="user_name" class="input-block-level" placeholder="请输入用户名">
+				<input type="password" id="user_password" class="input-block-level" placeholder="请输入密码">
+				<label class="checkbox">
+					<input type="checkbox" value="remember-me">记住密码</label>
+				<button class="btn btn-large btn-primary" onclick="login()">登录</button>
 			</div>
 		</div>
+		<!--footer-->
 		<div id="footer">
 			Copyright © 2013
 			<a href="#">陈畅</a>
 			版权所有。保留所有权利。
 		</div>
-		<!-- Modal -->
-        <div id="panel" class="hide"></div>
+	</div>
 <script src="js/jquery.js"></script>
 <script src="js/bootstrap.js"></script>
-<script src="js/ajaxfileupload.js"></script>
 <script src="js/class.js"></script>
-<script src="js/table.js"></script>
-<script src="js/panel.js"></script>
-<script src="js/content.js"></script>
-
 <script type="text/javascript">
-
-
-
-
-
-$('#myTab a').click(function (e) {
-  e.preventDefault();
-  $(this).tab('show');
+BASEPATH='<%=basePath%>';
+ $('.carousel').carousel({
+  interval: 2000
 });
+function login(){
+var parma={};
+parma.theme="User";
+parma.method="login";
+parma.user_name=$("#user_name")[0].value;
+parma.user_password=$("#user_password")[0].value;
+parma.user_type="0";
+Chen.Ajax.ajax_send(parma,login_res);
+}
+function login_res(r){
+if(r.flag){
+location.assign(BASEPATH+"main.jsp");
+}
+else{
+alert("登录失败！");
+}
+}
+
 </script>
-</body>
+
+  </body>
 </html>
