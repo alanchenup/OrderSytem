@@ -1,9 +1,7 @@
-package com.ordersystem.view.action;
+package com.ordersystem.view.listener;
 
 import java.io.IOException;
 import java.io.OutputStream;
-import java.io.PrintWriter;
-import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
 import javax.servlet.ServletException;
@@ -12,10 +10,12 @@ import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import javax.servlet.http.HttpSession;
 
+import com.ordersystem.commom.dao.Transaction;
 import com.ordersystem.common.model.User;
+import com.ordersystem.common.util.LogUtil;
 
 public class DoAjaxServlet extends HttpServlet {
-
+	public final static  Class clazz = DoAjaxServlet.class;
 	/**
 	 * Constructor of the object.
 	 */
@@ -48,19 +48,7 @@ public class DoAjaxServlet extends HttpServlet {
 	public void doGet(HttpServletRequest request, HttpServletResponse response)
 			throws ServletException, IOException {
 
-		response.setContentType("text/html");
-		PrintWriter out = response.getWriter();
-		out.println("<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">");
-		out.println("<HTML>");
-		out.println("  <HEAD><TITLE>A Servlet</TITLE></HEAD>");
-		out.println("  <BODY>");
-		out.print("    This is ");
-		out.print(this.getClass());
-		out.println(", using the GET method");
-		out.println("  </BODY>");
-		out.println("</HTML>");
-		out.flush();
-		out.close();
+		doPost(request,response);
 	}
 
 	/**
@@ -84,36 +72,45 @@ public class DoAjaxServlet extends HttpServlet {
 		String theme = request.getParameter("theme");
 		String method = request.getParameter("method");
 		
-		
-		
-		User user=null;
+		User user = null;
 		HttpSession session = request.getSession(true);
-        if(session.getAttribute("user")!=null){
-        	user =(User)session.getAttribute("user");
-        }
-        else{
-        	user= new User();
-        }
-		//利用反射调用后端类和方法
-		String res=null;
-		Class cls=null;
-		Class [] parameterTypes=null;
-		Method methodName=null;
+		if (session.getAttribute("user") != null) {
+			user = (User) session.getAttribute("user");
+			LogUtil.info(clazz, "IP:"+request.getRemoteAddr()+" User:"+user.getUser_name()+" theme:"+theme+" method:"+method);
+		} else {
+			user = new User();
+		}
+		// 利用反射调用后端类和方法
+		String res = null;
+		Class cls = null;
+		Class[] parameterTypes = null;
+		Method methodName = null;
 		try {
-			 cls= Class.forName("com.ordersystem.service."+theme+"Wrap");
-			 parameterTypes = new Class[] { HttpSession.class,HttpServletRequest.class, User.class };
-			 methodName= cls.getMethod(method,parameterTypes);
-			res = (String) methodName.invoke(null, new Object[] { session,request, user });
+			cls = Class.forName("com.liaoyang.service." + theme + "Wrap");
+			parameterTypes = new Class[] { HttpSession.class,
+					HttpServletRequest.class, User.class };
+			methodName = cls.getMethod(method, parameterTypes);
+			if(methodName==null){
+				LogUtil.info(cls, "NO Method:"+theme+"."+method);
+			}else{
+			res = (String) methodName.invoke(null, new Object[] { session,
+					request, user });
+			}
+		  if(res==null) res="[]";			
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
+			LogUtil.error(cls, "res:"+res+"  exception:"+e.getMessage());
+			res="[]";
 			e.printStackTrace();
 		}
-		
-		
+		finally{
+			Transaction.closeSession(true);
+		}
+
 		response.setContentType("application/json");
 		response.setCharacterEncoding("utf-8");
-        OutputStream out = response.getOutputStream();
-        out.write(res.getBytes("UTF-8"));
+		OutputStream out = response.getOutputStream();
+		out.write(res.getBytes("UTF-8"));
 		out.flush();
 		out.close();
 	}

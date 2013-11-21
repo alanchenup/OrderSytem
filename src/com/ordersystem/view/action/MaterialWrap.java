@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ordersystem.service;
+package com.ordersystem.view.action;
 
 import java.util.HashMap;
 import java.util.List;

@@ -1,4 +1,4 @@
-package com.ordersystem.view.action;
+package com.ordersystem.view.listener;
 
 import java.io.BufferedInputStream;
 import java.io.File;
@@ -21,8 +21,9 @@ import org.apache.commons.fileupload.FileItem;
 import org.apache.commons.fileupload.disk.DiskFileItemFactory;
 import org.apache.commons.fileupload.servlet.ServletFileUpload;
 
+import com.ordersystem.commom.dao.Transaction;
 import com.ordersystem.common.model.Pic;
-import com.ordersystem.service.PicWrap;
+import com.ordersystem.view.action.PicWrap;
 
 public class PicServlet extends HttpServlet {
 	File tmpDir = null;// 初始化上传文件的临时存放目录
@@ -80,6 +81,8 @@ public class PicServlet extends HttpServlet {
 		} catch (Exception e) {
 			// TODO Auto-generated catch block
 			e.printStackTrace();
+		}finally{
+			Transaction.closeSession(true);
 		}
 
 	}
@@ -160,6 +163,9 @@ public class PicServlet extends HttpServlet {
 			}
 		} catch (Exception e) {
 			e.printStackTrace();
+		}
+		finally{
+			Transaction.closeSession(true);
 		}
 		
 		response.setContentType("text/html");

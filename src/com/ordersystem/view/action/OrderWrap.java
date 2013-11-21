@@ -1,7 +1,7 @@
 /**
  * 
  */
-package com.ordersystem.service;
+package com.ordersystem.view.action;
 
 import java.util.HashMap;
 import java.util.List;
@@ -10,22 +10,21 @@ import java.util.Map;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpSession;
 
-import com.ordersystem.common.model.Dish;
+import com.ordersystem.common.model.Order;
 import com.ordersystem.common.model.Page;
-import com.ordersystem.common.model.Pic;
 import com.ordersystem.common.model.User;
 import com.ordersystem.common.util.JsonUtil;
-import com.ordersystem.dao.DaoDish;
+import com.ordersystem.dao.DaoOrder;
 
 /**
  * @author Administrator
- * 
+ *
  */
-public class DishWrap {
-	public static DaoDish daoDish = new DaoDish();
+public class OrderWrap {
+	public static DaoOrder daoOrder = new DaoOrder();
 
 	/**
-	 * 载入菜品
+	 * 载入订单
 	 * 
 	 * @param session
 	 * @param request
@@ -42,17 +41,17 @@ public class DishWrap {
 		String orderasc = request.getParameter("orderasc");
 		// 搜索关键字
 		String keyword = request.getParameter("keyword");
-		Page page = new Page(pagesize, pageindex, daoDish.getSum(null));
+		Page page = new Page(pagesize, pageindex, daoOrder.getSum(null));
 
-		List<Dish> dishList = daoDish.loadAll(page, orderby, orderasc);
+		List<Order> orderList = daoOrder.loadAll(page, orderby, orderasc);
 		Map<String, Object> map = new HashMap<String, Object>();
 		map.put("page", page);
-		map.put("rows", dishList);
+		map.put("rows", orderList);
 		return JsonUtil.toJson(map);
 	}
 
 	/**
-	 * 添加是的菜品到数据库
+	 * 添加订单
 	 * 
 	 * @param session
 	 * @param request
@@ -62,22 +61,21 @@ public class DishWrap {
 	 */
 	public static String add(HttpSession session, HttpServletRequest request,
 			User user) throws Exception {
-		Dish dish = new Dish();
-		dish.setDish_name(request.getParameter("dish_name"));
-		dish.setDish_pic(Integer.parseInt(request.getParameter("dish_pic")));
-		dish.setDish_content(request.getParameter("dish_content"));
-		dish.setM_mate(Integer.parseInt(request.getParameter("m_mate")));
-		dish.setV_mate(Integer.parseInt(request.getParameter("v_mate")));
-		dish.setDish_price(request.getParameter("dish_price"));
-		dish.setDish_c_price(request.getParameter("dish_c_price"));
-		Boolean flag = daoDish.add(dish);
+		Order order = new Order();
+		order.setUserId(Integer.parseInt(request.getParameter("userid")));
+		
+		order.setOrder_money(request.getParameter("order_money"));
+		
+		order.setOthers(request.getParameter("others"));
+		
+		Boolean flag = daoOrder.add(order);
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		map.put("flag", flag);
 		return JsonUtil.toJson(map);
 	}
 
 	/**
-	 * 更新菜品
+	 * 更新订单
 	 * 
 	 * @param session
 	 * @param request
@@ -87,29 +85,19 @@ public class DishWrap {
 	 */
 	public static String update(HttpSession session,
 			HttpServletRequest request, User user) throws Exception {
-		Dish dish = new Dish();
-		dish.setId(Integer.parseInt(request.getParameter("id")));
-		dish.setDish_name(request.getParameter("dish_name"));
-		dish.setDish_pic(Integer.parseInt(request.getParameter("dish_pic")));
-		dish.setDish_content(request.getParameter("dish_content"));
-		dish.setDish_price(request.getParameter("dish_price"));
-		dish.setDish_c_price(request.getParameter("dish_c_price"));
-		dish.setM_mate(Integer.parseInt(request.getParameter("m_mate")));
-		dish.setV_mate(Integer.parseInt(request.getParameter("v_mate")));
-		
-		//获取image的路径 
-		String picuri=request.getParameter("dish_pic");
-		
-		
-		
-		Boolean flag = daoDish.update(dish);
+		Order order = new Order();
+		order.setId(Integer.parseInt(request.getParameter("id")));
+		order.setUserId(Integer.parseInt(request.getParameter("userid")));		
+		order.setOrder_money(request.getParameter("order_money"));		
+		order.setOthers(request.getParameter("others"));		
+		Boolean flag = daoOrder.update(order);
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		map.put("flag", flag);
 		return JsonUtil.toJson(map);
 	}
 
 	/**
-	 * 删除菜品
+	 * 删除订单
 	 * 
 	 * @param session
 	 * @param request
@@ -121,7 +109,7 @@ public class DishWrap {
 			HttpServletRequest request, User user) throws Exception {
 
 		int id = Integer.parseInt(request.getParameter("id"));
-		Boolean flag = daoDish.delete(id);
+		Boolean flag = daoOrder.delete(id);
 		Map<String, Boolean> map = new HashMap<String, Boolean>();
 		map.put("flag", flag);
 		return JsonUtil.toJson(map);
