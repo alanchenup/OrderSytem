@@ -4,8 +4,8 @@ import java.lang.reflect.Method;
 import java.util.Map;
 import java.util.concurrent.ConcurrentHashMap;
 
-import com.liaoyang.common.util.LogUtil;
-import com.liaoyang.common.util.RandomStringUtil;
+import com.ordersystem.common.util.LogUtil;
+import com.ordersystem.common.util.RandomStringUtil;
 
 
 /***

@@ -11,7 +11,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
-import com.liaoyang.common.util.LogUtil;
+import com.ordersystem.common.util.LogUtil;
 
 /***
  * 数据库链接装饰类

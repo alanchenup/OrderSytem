@@ -1,6 +1,6 @@
 package com.ordersystem.commom.dao;
 
-import com.liaoyang.common.util.LogUtil;
+import com.ordersystem.common.util.LogUtil;
 
 
 /***
@@ -14,7 +14,7 @@ import com.liaoyang.common.util.LogUtil;
 public class ConnectionBuffer {
 	
 	public static ConnectionPool pool;
-	public static Class clazz= ConnectionBuffer.class;
+	public static Class cls= ConnectionBuffer.class;
 	public static void init(String driver, String url,String name, String password, int initial,int increment, int max) {
 		pool=new ConnectionPool(driver, url,name, password, initial,increment, max);
 		new Thread(new ConnectionHold()).start();
@@ -61,7 +61,7 @@ public class ConnectionBuffer {
 						for(ConnectionProxy cont:pool.connections){
 							if (!cont.busy) {
 								cont.busy=true;
-								cont.sql_query("select 1 from dual",null);
+								cont.sql_query("select 1 ",null);
 								cont.release();
 								cont.busy=false;
 							}
@@ -69,7 +69,7 @@ public class ConnectionBuffer {
 					}
 				}
 				catch(Exception e){
-					LogUtil.error(clazz, "run:"+e.getMessage());
+					LogUtil.error(cls, "run:"+e.getMessage());
 				}
 			}
 		}

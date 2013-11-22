@@ -6,15 +6,18 @@ import com.ordersystem.common.model.Page;
 import com.ordersystem.common.model.User;
 
 public interface UserManager {
-	public boolean login(User user);
+	
+	public void data() throws Exception;
+	
+	public boolean login(User user) throws Exception ;
 
-	public boolean regist(User user);
+	public boolean regist(User user) throws Exception;
 
-	public List<User> loadAll(Page page, String orderby, String orderasc);
+	public List<User> loadAll() throws Exception;
 
-	public Boolean add(User user);
+	public Boolean add(User user) throws Exception;
 
-	public Boolean update(User user);
+	public Boolean update(User user) throws Exception;
 
-	public Boolean delete(int id);
+	public Boolean delete(int id) throws Exception;
 }
